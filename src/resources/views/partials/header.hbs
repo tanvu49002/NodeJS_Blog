@@ -1,0 +1,46 @@
+<nav class='navbar fixed-top navbar-expand-lg bg-body-tertiary'>
+    <div class="container">
+        <a class='navbar-brand' href='/'>Meta</a>
+            <div class='collapse navbar-collapse' id='navbarSupportedContent'>
+                <ul class='navbar-nav me-auto mb-2 mb-lg-0'>
+                    <li class='nav-item'>
+                        <a
+                            class='nav-link'
+                            aria-current='page'
+                            href='/'
+                        >Home</a>
+                    </li>
+                    {{#if user.isAdmin}}
+                    <li class='nav-item'>
+                        <a class='nav-link' href='/course/create'>CreateCourse</a>
+                    </li>
+                    {{/if}}
+                </ul>
+                {{#if user}}
+                <a
+                    class='nav-link dropdown-toggle'
+                    href='#'
+                    role='button'
+                    data-bs-toggle='dropdown'
+                    aria-expanded='false'
+                >
+                    <img
+                        src='https://fullstack.edu.vn/static/media/fallback-avatar.155cdb2376c5d99ea151.jpg'
+                        alt=''
+                        class='user-avatar'
+                    />
+                    {{user.username}}
+                </a>
+                <ul class='dropdown-menu user-menu'>
+                    <li><a class='dropdown-item' href='/account'>Account</a></li>
+                    {{#if user.isAdmin}}
+                    <li><a class='dropdown-item' href='/course/mycourse?page=1'>My Courses</a></li>
+                    {{/if}}
+                    <li><hr class='dropdown-divider' /></li>
+                    <li><a class='dropdown-item' href='/logout'>Sign Out</a></li>
+                </ul>
+                {{/if}}
+            </div>
+    </div>
+</nav>
+

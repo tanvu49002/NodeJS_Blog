@@ -1,0 +1,251 @@
+<div class="container">
+    <div class="mt-5 pt-5 mb-5 pb-5">
+        <h2 class="mt-4">LESSON LIST</h2>
+        <a href="/course/mycourse/trash?page=1">
+            <i class="fa-solid fa-trash-can"></i>
+            Trash Bin ({{deletedcount}})
+        </a>
+        <table class='table mt-4'>
+            <thead>
+                <tr>
+                    <th scope='col'>#</th>
+                    <th scope='col'>
+                        Lesson Name 
+                        {{!-- {{{sorthelper 'name' sort}}} --}}
+                    </th>
+                    <th scope='col'>
+                        Create At
+                        {{!-- {{{sorthelper 'createAt' sort}}} --}}
+                    </th>
+                    <th scope='col'>Actions</th>
+                </tr>
+            </thead>
+            {{#each lessons}}
+                <tbody>
+                    <tr>
+                        <th scope='row'>{{sumhelper @index 1}}</th>
+                        <td><a href="">{{this.title}}</a></td>
+                        <td>{{this.createdAt}}</td>
+                        <td>
+                            <div class='btn-group' role='group'>
+                                <button
+                                    type='button'
+                                    class='btn btn-primary dropdown-toggle'
+                                    data-bs-toggle='dropdown'
+                                    aria-expanded='false'
+                                >
+                                    Actions
+                                </button>
+                                <ul class='dropdown-menu'>
+                                    <li><button
+                                            type='button'
+                                            data-bs-toggle='modal'
+                                            data-bs-target='#updateCourseModal'
+                                            data-bs-courseid='{{this._id}}'
+                                            data-bs-coursename='{{this.title}}'
+                                            
+                                            class='dropdown-item'
+                                        >Update</button></li>
+                                    <li><button
+                                            type='button'
+                                            data-bs-toggle='modal'
+                                            data-bs-target='#confirmDeleteCourseModal'
+                                            data-bs-courseid='{{this._id}}'
+                                            class='dropdown-item'
+                                        >Delete</button></li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                    
+                </tbody>
+            {{else}}
+                <tr>
+                    <td colspan="5" class="text-center">
+                        This course doesn't have any lessons yet.
+                        <a href="/course/{{course._id}}/createlesson">Add lesson now</a>
+                    </td>
+                </tr>
+            {{/each}}
+            <tr>
+                <td colspan="5" class="text-center">
+                    Add more lesson for this course
+                    <a href="/course/{{course._id}}/createlesson">Add lesson now</a>
+                </td>
+            </tr>
+        </table>
+        {{!-- pagination --}}
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-center">
+                <li class="page-item">
+                <a class="page-link" href="#" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+                </li>
+                {{#each (range 1 totalpage)}}
+                    <li class="page-item">
+                        <a class="page-link" href='?page={{sumhelper @index 1}}' onclick="handlePageClick(this)">
+                            {{sumhelper @index 1}}
+                        </a>
+                    </li>
+                {{/each }}
+                <li class="page-item">
+                    <a class="page-link" href="#" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>
+
+
+{{! Modal update course }}
+<div
+    class='modal fade'
+    id='updateCourseModal'
+    tabindex='-1'
+    aria-labelledby='exampleModalLabel'
+    aria-hidden='true'
+>
+    <div class='modal-dialog'>
+        <div class='modal-content'>
+            <div class='modal-header'>
+                <h1 class='modal-title fs-5' id='exampleModalLabel'>Update
+                    Course</h1>
+                <button
+                    type='button'
+                    class='btn-close'
+                    data-bs-dismiss='modal'
+                    aria-label='Close'
+                ></button>
+            </div>
+            <div class='modal-body'>
+                <form id='update-course-form' method='POST' action="">
+                    <div class='mb-3'>
+                        <label
+                            for='recipient-name'
+                            class='col-form-label'
+                        >Name</label>
+                        <input
+                            type='text'
+                            class='form-control'
+                            id='course-name'
+                            name='name'
+                        />
+                    </div>
+                    <div class='mb-3'>
+                        <label
+                            for='message-text'
+                            class='col-form-label'
+                        >Description</label>
+                        <textarea
+                            class='form-control'
+                            id='course-description'
+                            name='description'
+                        ></textarea> 
+                    </div>
+                </form>
+            </div>
+            <div class='modal-footer'>
+                <button
+                    type='button'
+                    class='btn btn-secondary'
+                    data-bs-dismiss='modal'
+                >Close</button>
+                <button type="submit" id='submit-updateCourse-button' class='btn btn-primary'>Update</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{! Modal delete course confirm }}
+<div
+    class='modal fade'
+    id='confirmDeleteCourseModal'
+    tabindex='-1'
+    aria-labelledby='exampleModalLabel'
+    aria-hidden='true'
+>
+    <div class='modal-dialog'>
+        <div class='modal-content'>
+            <div class='modal-header'>
+                <h1 class='modal-title fs-5' id='exampleModalLabel'>Delete this course</h1>
+                <button
+                    type='button'
+                    class='btn-close'
+                    data-bs-dismiss='modal'
+                    aria-label='Close'
+                ></button>
+            </div>
+            <div class='modal-body'>
+                Are you sure you want to delete this course?
+            </div>
+            <div class='modal-footer'>
+                <button
+                    type='button'
+                    class='btn btn-secondary'
+                    data-bs-dismiss='modal'
+                >Cancel</button>
+                <button id='submit-deleteCourse-button' type='submit' class='btn btn-danger'>Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{!-- hidden form for delete course --}}
+<form id='delete-course-form' method='POST' action=""></form>
+
+<script>
+    const UpdateCourseModal = document.getElementById('updateCourseModal');
+    const ConfirmDeleteCourseModal = document.getElementById('confirmDeleteCourseModal');
+    const DeleteCourseForm = document.getElementById('delete-course-form');
+    const PageItems = document.querySelectorAll('.page-item');
+    const PageLink = document.querySelectorAll('.page-link');
+    function handlePageClick(link) {
+      // Loại bỏ class 'active' từ tất cả các thẻ a trong pagination
+      
+      PageItems.forEach((el) => {
+        el.classList.remove('active');
+      });
+
+      // Thêm class 'active' cho thẻ a được click
+      link.classList.add('active');
+
+      // Chuyển hướng đến href của thẻ a
+      window.location.href = link.getAttribute('href');
+    }
+    //update
+    if (UpdateCourseModal) {
+        UpdateCourseModal.addEventListener('show.bs.modal', event => {
+            const Button = event.relatedTarget
+            const CourseName = Button.getAttribute('data-bs-coursename')
+            const CourseDescription = Button.getAttribute('data-bs-coursedesc')
+            const CourseId = Button.getAttribute('data-bs-courseid')
+            const CourseNameInput = UpdateCourseModal.querySelector('#course-name')
+            const CourseDescriptionInput = UpdateCourseModal.querySelector('#course-description')
+            const UpdateCourseForm = UpdateCourseModal.querySelector('#update-course-form') 
+            const SubmitUpdateCourseButton = UpdateCourseModal.querySelector('#submit-updateCourse-button')
+            CourseNameInput.value = CourseName
+            CourseDescriptionInput.value = CourseDescription
+            
+            SubmitUpdateCourseButton.onclick = function () {
+                UpdateCourseForm.action = '/course/mycourse/' + CourseId + '?_method=PUT'
+                UpdateCourseForm.submit()
+            }
+        })
+    }
+    //delete
+    if (ConfirmDeleteCourseModal) {
+        ConfirmDeleteCourseModal.addEventListener('show.bs.modal', event => {
+            const Button = event.relatedTarget
+            const CourseId = Button.getAttribute('data-bs-courseid')
+            const SubmitDeleteCourseButton = ConfirmDeleteCourseModal.querySelector('#submit-deleteCourse-button')
+            SubmitDeleteCourseButton.onclick = function () {
+                DeleteCourseForm.action = '/course/mycourse/' + CourseId + '?_method=DELETE'
+                DeleteCourseForm.submit()
+            }
+        })
+    }
+    
+</script>

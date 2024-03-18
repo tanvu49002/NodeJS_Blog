@@ -1,0 +1,191 @@
+<div class="container">
+    <div class="mt-5 pt-5 mb-5 pb-5">
+        <h2 class="mt-4">TRASH COURSES</h2>
+        <a href="/course/mycourse?page=1">My courses ({{countcourse}})</a>
+        <table class='table mt-4'>
+            <thead>
+                <tr>
+                    <th scope='col'>#</th>
+                    <th scope='col'>Course Name</th>
+                    <th scope='col'>Description</th>
+                    <th scope='col'>Deleted At</th>
+                    <th scope='col'>Actions</th>
+                </tr>
+            </thead>
+            {{#each courses}}
+                <tbody>
+                    <tr>
+                        <th scope='row'>{{sumhelper @index 1}}</th>
+                        <td>{{this.name}}</td>
+                        <td>{{this.description}}</td>
+                        <td>{{this.deletedAt}}</td>
+                        <td>
+                            <div class='btn-group' role='group'>
+                                <button
+                                    type='button'
+                                    class='btn btn-primary dropdown-toggle'
+                                    data-bs-toggle='dropdown'
+                                    aria-expanded='false'
+                                >
+                                    Actions
+                                </button>
+                                <ul class='dropdown-menu'>
+                                    <li><button
+                                            type='button'
+                                            data-bs-toggle='modal'
+                                            data-bs-target='#confirmRestoreCourseModal'
+                                            data-bs-courseid='{{this._id}}'
+                                            class='dropdown-item'
+                                        >Restore</button></li>
+                                    <li><button
+                                            type='button'
+                                            data-bs-toggle='modal'
+                                            data-bs-target='#confirmPermanenlyDeleteCourseModal'
+                                            data-bs-courseid='{{this._id}}'
+                                            class='dropdown-item'
+                                        >Delete</button></li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            {{else}}
+                <tr>
+                    <td colspan="5" class="text-center">
+                        Trash bin is empty
+                    </td>
+                </tr>
+            {{/each}}
+        </table>
+        {{!-- pagination --}}
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-center">
+                <li class="page-item">
+                <a class="page-link" href="#" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+                </li>
+                {{#each (range 1 totalpage)}}
+                    <li class="page-item">
+                        <a class="page-link" href='?page={{sumhelper @index 1}}' onclick="handlePageClick(this)">
+                            {{sumhelper @index 1}}
+                        </a>
+                    </li>
+                {{/each }}
+                <li class="page-item">
+                <a class="page-link" href="#" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>
+
+
+{{! confirm restore course modal }}
+<div
+    class='modal fade'
+    id='confirmRestoreCourseModal'
+    tabindex='-1'
+    aria-labelledby='exampleModalLabel'
+    aria-hidden='true'
+>
+    <div class='modal-dialog'>
+        <div class='modal-content'>
+            <div class='modal-header'>
+                <h1 class='modal-title fs-5' id='exampleModalLabel'>Restore this course</h1>
+                <button
+                    type='button'
+                    class='btn-close'
+                    data-bs-dismiss='modal'
+                    aria-label='Close'
+                ></button>
+            </div>
+            <div class='modal-body'>
+                You wanna restore this course?
+            </div>
+            <div class='modal-footer'>
+                <button
+                    type='button'
+                    class='btn btn-secondary'
+                    data-bs-dismiss='modal'
+                >Cancel</button>
+                <button id='submit-restoreCourse-button' type='submit' class='btn btn-success'>Restore</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{! permanenly delete course confirm modal }}
+<div
+    class='modal fade'
+    id='confirmPermanenlyDeleteCourseModal'
+    tabindex='-1'
+    aria-labelledby='exampleModalLabel'
+    aria-hidden='true'
+>
+    <div class='modal-dialog'>
+        <div class='modal-content'>
+            <div class='modal-header'>
+                <h1 class='modal-title fs-5' id='exampleModalLabel'>Permanenly delete this course</h1>
+                <button
+                    type='button'
+                    class='btn-close'
+                    data-bs-dismiss='modal'
+                    aria-label='Close'
+                ></button>
+            </div>
+            <div class='modal-body'>
+                Are you sure you want to permanenly delete this course?
+            </div>
+            <div class='modal-footer'>
+                <button
+                    type='button'
+                    class='btn btn-secondary'
+                    data-bs-dismiss='modal'
+                >Cancel</button>
+                <button id='submit-permanenlydeleteCourse-button' type='submit' class='btn btn-danger'>Permanenly delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{!-- hidden form for forcedelete course --}}
+<form id='permanenlydelete-course-form' method='POST' action=""></form>
+
+{{!-- hidden form for restore course --}}
+<form id='restore-course-form' method='POST' action=""></form>
+
+
+<script>
+    const ConfirmRestoreCourseModal = document.getElementById('confirmRestoreCourseModal')
+    const RestoreCourseForm = document.getElementById('restore-course-form')
+    const ConfirmPermanenlyDeleteCourseModal = document.getElementById('confirmPermanenlyDeleteCourseModal')
+    const PermanenlyDeleteCourseForm = document.getElementById('permanenlydelete-course-form')
+    //restore
+    if (ConfirmRestoreCourseModal) {
+        ConfirmRestoreCourseModal.addEventListener('show.bs.modal', event => {
+            const Button = event.relatedTarget
+            const CourseId = Button.getAttribute('data-bs-courseid')
+            const SubmitRestoreCourseButton = ConfirmRestoreCourseModal.querySelector('#submit-restoreCourse-button')
+            SubmitRestoreCourseButton.onclick = function () {
+                RestoreCourseForm.action = '/course/mycourse/' + CourseId + '/restore?_method=PATCH'
+                RestoreCourseForm.submit()
+            }
+        })
+    }
+    //delete
+    if (ConfirmPermanenlyDeleteCourseModal) {
+        ConfirmPermanenlyDeleteCourseModal.addEventListener('show.bs.modal', event => {
+            const Button = event.relatedTarget
+            const CourseId = Button.getAttribute('data-bs-courseid')
+            const SubmitPermanenlyDeleteCourseButton = ConfirmPermanenlyDeleteCourseModal.querySelector('#submit-permanenlydeleteCourse-button')
+            SubmitPermanenlyDeleteCourseButton.onclick = function () {
+                PermanenlyDeleteCourseForm.action = '/course/mycourse/' + CourseId + '/permanenly?_method=DELETE'
+                PermanenlyDeleteCourseForm.submit()
+            }
+        })
+    }
+    
+</script>

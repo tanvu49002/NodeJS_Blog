@@ -1,0 +1,31 @@
+<div class="login-container">
+    <div class="registration form">
+        <header>Register</header>
+        <form method="POST" action="/register/storeuser">
+            <input type="text" placeholder="Enter your username" name="username">
+            <input type="text" placeholder="Enter your email" name="email">
+            <input id="password" type="password" placeholder="Create a password" name="password">
+            <input id="confirmpassword" type="password" placeholder="Confirm your password" name="confirmpassword">
+            <input type="submit" class="button" value="SignUp">
+        </form>
+        <div class="signup">
+            <span class="signup">Already have an account?
+                <a href="/login">Login</a>
+            </span>
+        </div>
+    </div>
+</div>
+<script>
+    const PasswordInput = document.getElementById('password')
+    const ConfirmPassInput = document.getElementById('confirmpassword')
+    PasswordInput.addEventListener('input', function(event) {
+        if (event.target.value.includes(' ') || event.target.value.includes('\t')) {
+            event.target.value = event.target.value.replace(/[\s\t]/g, '');
+        }
+    });
+    ConfirmPassInput.addEventListener('input', function(event) {
+        if (event.target.value.includes(' ') || event.target.value.includes('\t')) {
+            event.target.value = event.target.value.replace(/[\s\t]/g, '');
+        }
+    });
+</script>

@@ -1,0 +1,110 @@
+<div class='container-fluid course-content-wrap'>
+    <div class='row'>
+        <div class='col-lg-8 mb-5'>
+            <div class="lesson-video mb-2">
+                <video class="lesson-video" controls frameborder="0" allowfullscreen preload="auto">
+                    <source src="" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+            <div class="container">
+                <h3 class="lesson-title"></h3>
+                <p class="lesson-date"></p>
+                
+                <h3>Comments</h3>
+                <span>(31 comments)</span>
+                <div class="comment-input-wrap d-flex p-2">
+                    <div class="avatar-cmt-img-wrap me-2 mt-2">
+                        <img src="https://fullstack.edu.vn/static/media/fallback-avatar.155cdb2376c5d99ea151.jpg" alt="" class="user-avatar">
+                    </div>
+                    <div class='form-wrap flex-grow-1'>
+                        <div class="form-group">
+                            <form method='POST' action=''> 
+                                <input type="text" class="form-control border-0 border-bottom" placeholder="Enter your comment here...">
+                                <button class="btn btn-primary rounded-5 float-end mt-2">Comment</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="container">
+                    <div class="comment-wrap d-flex p-2">
+                        <div class="avatar-cmt-img-wrap me-2">
+                            <img src="https://fullstack.edu.vn/static/media/fallback-avatar.155cdb2376c5d99ea151.jpg" alt="" class="user-avatar">
+                        </div>
+                        <div class='cmt-content-wrap flex-grow-1'>
+                            <span class="fw-semibold">Nguyen Tan Vu</span>
+                            <span class="text-secondary">Posted at: 26th Feb 2024</span>
+                            <p class="comment-content mt-2">Lorem ipsum dolor sit amet consectetur adipisicing elit. Nisi facere sequi rerum commodi molestiae, sapiente, tempora quisquam velit itaque assumenda quis quos corrupti. Ad nostrum doloremque totam, vel sapiente suscipit!</p>
+                        </div>
+                    </div>
+                    <div class="comment-wrap d-flex p-2">
+                        <div class="avatar-cmt-img-wrap me-2">
+                            <img src="https://fullstack.edu.vn/static/media/fallback-avatar.155cdb2376c5d99ea151.jpg" alt="" class="user-avatar">
+                        </div>
+                        <div class='cmt-content-wrap flex-grow-1'>
+                            <span class="fw-semibold">Nguyen Tan Vu</span>
+                            <span class="text-secondary">Posted at: 26th Feb 2024</span>
+                            <p class="comment-content mt-2">Lorem ipsum dolor sit amet consectetur adipisicing elit. Nisi facere sequi rerum commodi molestiae, sapiente, tempora quisquam velit itaque assumenda quis quos corrupti. Ad nostrum doloremque totam, vel sapiente suscipit!</p>
+                        </div>
+                    </div>
+                    <div class="comment-wrap d-flex p-2">
+                        <div class="avatar-cmt-img-wrap me-2">
+                            <img src="https://fullstack.edu.vn/static/media/fallback-avatar.155cdb2376c5d99ea151.jpg" alt="" class="user-avatar">
+                        </div>
+                        <div class='cmt-content-wrap flex-grow-1'>
+                            <span class="fw-semibold">Nguyen Tan Vu</span>
+                            <span class="text-secondary">Posted at: 26th Feb 2024</span>
+                            <p class="comment-content mt-2">Lorem ipsum dolor sit amet consectetur adipisicing elit. Nisi facere sequi rerum commodi molestiae, sapiente, tempora quisquam velit itaque assumenda quis quos corrupti. Ad nostrum doloremque totam, vel sapiente suscipit!</p>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="col-lg-4 position-fixed bottom-0 end-0 mb-4 course-content">
+            <span class="course-content-text">Course Content</span>
+            {{#each lessons}}
+                <ul class="mt-2 lesson-list list-group">
+                        <li class="lesson-item list-group-item" data-lessonid = {{this._id}}>
+                            {{sumhelper @index 1}}. {{this.title}}
+                        </li>
+                </ul>
+            {{/each}}
+        </div>
+    </div>
+</div>
+<div class="d-flex flex-md-nowrap justify-content-center pre_next-btn-wrap align-items-center position-fixed bottom-0">
+    <button class="btn me-md-5 next-prev-btn btn-outline-secondary rounded-5" type="button">Previous Lesson</button>
+    <button class="btn btn-primary next-prev-btn rounded-5" type="button">Next Lesson</button>
+</div>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const lessonItems = document.querySelectorAll('.lesson-item');
+
+        lessonItems.forEach((item) => {
+            item.addEventListener('click', function() {
+                const lessonId = this.dataset.lessonid;
+                const apiUrl = `/course/getLessonDetail/${lessonId}`;
+                const urlParams = new URLSearchParams(window.location.search);
+                urlParams.set('id', lessonId);
+                const newUrl = `${window.location.pathname}?${urlParams.toString()}`;
+                window.history.pushState({}, '', newUrl);
+               
+                // Gọi API bằng fetch hoặc AJAX request tại đây
+                fetch(apiUrl)
+                    .then(response => response.json())
+                    .then(data => {
+                        const lesson = data.lesson;
+                        // Xử lý dữ liệu trả về từ API (nếu cần)
+                        document.querySelector('.lesson-title').innerText = lesson.title;
+                        document.querySelector('.lesson-video source').src = lesson.video;
+                        // Load lại video
+                        document.querySelector('.lesson-video').currentTime = 0;
+                        
+                    })
+                    .catch(error => console.error('Error:', error));
+            });
+        });
+    });
+</script>
+

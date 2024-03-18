@@ -1,0 +1,276 @@
+<div class="container mt-5 pt-4 mb-5 pb-4">
+    <div class="user-infor-wrap text-center mb-4">
+        <img src="https://fullstack.edu.vn/static/media/fallback-avatar.155cdb2376c5d99ea151.jpg" alt="" class="user-avatar-temp mt-5">
+        <h2>{{user.username}}</h2>
+        <p>{{user.email}}</p>
+        <div class="btn-wrap">
+            <button 
+                class="btn btn-update-infor btn-primary rounded-5"
+                data-bs-toggle='modal'
+                data-bs-target='#updateAccountModal'
+                data-bs-userid='{{user._id}}'
+                data-bs-username='{{user.username}}'
+                data-bs-useremail='{{user.email}}'
+            >Update Information</button>
+            <button 
+                class="btn btn-change-pass btn-primary rounded-5"
+                data-bs-toggle='modal'
+                data-bs-target='#changePassModal'
+                data-bs-userid='{{user._id}}'
+            >Change Password</button>
+        </div>
+    </div>
+    <div class="registered-course">
+        <h2>Registered Course</h2>
+        <div class="row mt-4">
+            {{#each courses}}
+                <div class='col-lg-4 mb-4'>
+                    <div class='col-lg-4 mb-4'>
+                        <div class='card' style='width: 20rem; height: 21rem'>
+                            <a href='/course/{{this.slug}}'>
+                                <img
+                                    src='{{this.image}}'
+                                    class='card-img-top'
+                                    alt='...'
+                                />
+                            </a>
+                            <div class='card-body'>
+                                <a href='/course/{{this.slug}}'>
+                                    <h5 class='card-title'>{{this.name}}</h5>
+                                </a>
+                                <p class='card-text'>{{this.description}}</p>
+                                <a
+                                    href='/course/{{this.slug}}'
+                                    class='btn btn-primary'
+                                >Học ngay</a>
+                            </div>
+                        </div>
+                    </div>
+                    {{else}}
+                    <div class="text-center">You are not attending any courses</div>
+                </div>
+            {{/each}}
+        </div>
+    </div>
+</div>
+{{! Modal update Account }}
+<div
+    class='modal fade'
+    id='updateAccountModal'
+    tabindex='-1'
+    aria-labelledby='exampleModalLabel'
+    aria-hidden='true'
+>
+    <div class='modal-dialog'>
+        <div class='modal-content'>
+            <div class='modal-header'>
+                <h1 class='modal-title fs-5' id='exampleModalLabel'>Update
+                    Account</h1>
+                <button
+                    type='button'
+                    class='btn-close rounded-5'
+                    data-bs-dismiss='modal'
+                    aria-label='Close'
+                ></button>
+            </div>
+            <div class='modal-body'>
+                <form id='update-account-form' method='POST' action="">
+                    <div class='mb-3'>
+                        <label
+                            for='user-name'
+                            class='col-form-label'
+                        >Username</label>
+                        <input
+                            type='text'
+                            class='form-control'
+                            id='user-name'
+                            name='username'
+                        />
+                    </div>
+                    <div class='mb-3'>
+                        <label
+                            for='user-email'
+                            class='col-form-label'
+                        >Email</label>
+                        <input
+                            type='email'
+                            class='form-control'
+                            id='user-email'
+                            name='email'
+                        ></input> 
+                    </div>
+                    <div class='mb-3'>
+                        <input
+                            type='password'
+                            class='form-control'
+                            id='user-pass'
+                            name='password'
+                            placeholder="Enter your pass for confirm" 
+                        ></input> 
+                    </div>
+                </form>
+            </div>
+            <div class='modal-footer'>
+                <button
+                    type='button'
+                    class='btn btn-secondary rounded-5'
+                    data-bs-dismiss='modal'
+                >Close</button>
+                <button type="submit" id='submit-updateAccount-button' class='btn btn-primary rounded-5'>Update</button>
+            </div>
+        </div>
+    </div>
+</div>
+{{! Modal change password }}
+<div
+    class='modal fade'
+    id='changePassModal'
+    tabindex='-1'
+    aria-labelledby='exampleModalLabel'
+    aria-hidden='true'
+>
+    <div class='modal-dialog'>
+        <div class='modal-content'>
+            <div class='modal-header'>
+                <h1 class='modal-title fs-5' id='exampleModalLabel'>Change Password</h1>
+                <button
+                    type='button'
+                    class='btn-close rounded-5'
+                    data-bs-dismiss='modal'
+                    aria-label='Close'
+                ></button>
+            </div>
+            <div class='modal-body'>
+                <form id='change-pass-form' method='POST' action="">
+                    <div class='mb-3'>
+                        <label
+                            for='current-pass'
+                            class='col-form-label'
+                        >Current Password</label>
+                        <input
+                            type='password'
+                            class='form-control'
+                            id='current-pass'
+                            name='currentpass'
+                        />
+                    </div>
+                    <div class='mb-3'>
+                        <label
+                            for='new-pass'
+                            class='col-form-label'
+                        >New Password</label>
+                        <input
+                            type='password'
+                            class='form-control'
+                            id='new-pass'
+                            name='newpass'
+                        ></input> 
+                    </div>
+                    <div class='mb-3'>
+                        <label
+                            for='confirm-new-pass'
+                            class='col-form-label'
+                        >Confirm the New Password</label>
+                        <input
+                            type='password'
+                            class='form-control'
+                            id='confirm-new-pass'
+                            name='confirmnewpass'
+                        ></input> 
+                    </div>
+                </form>
+            </div>
+            <div class='modal-footer'>
+                <button
+                    type='button'
+                    class='btn btn-secondary rounded-5'
+                    data-bs-dismiss='modal'
+                >Close</button>
+                <button type="submit" id='submit-changePass-button' class='btn btn-primary rounded-5'>Update</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    const UpdateAccountModal = document.getElementById('updateAccountModal');
+    const ChangePassModal = document.getElementById('changePassModal');
+    const urlParams = new URLSearchParams(window.location.search);
+    const updateSuccess = urlParams.get('updateSuccess');
+
+    if (updateSuccess) {
+        Swal.fire({
+            title: 'Cập nhật thành công!',
+            icon: 'success',
+            timer: 1500, 
+            showConfirmButton: false
+        }).then(() => {
+            window.location.href = '/account';
+        });
+    }
+    if (UpdateAccountModal) {
+        UpdateAccountModal.addEventListener('show.bs.modal', event => {
+            const Button = event.relatedTarget
+            const Username = Button.getAttribute('data-bs-username')
+            const Email = Button.getAttribute('data-bs-useremail')
+            const UserID = Button.getAttribute('data-bs-userid')
+            const UsernameInput = UpdateAccountModal.querySelector('#user-name')
+            const EmailInput = UpdateAccountModal.querySelector('#user-email')
+            const ConfirmPasswordInput = UpdateAccountModal.querySelector('#user-pass')
+            const UpdateAccountForm = UpdateAccountModal.querySelector('#update-account-form') 
+            const SubmitUpdateAccountButton = UpdateAccountModal.querySelector('#submit-updateAccount-button')
+            UsernameInput.value = Username
+            EmailInput.value = Email
+            
+            SubmitUpdateAccountButton.onclick = function () {
+                if (!ConfirmPasswordInput.value.trim()) {
+                    event.preventDefault();
+                    alert('Please enter your password for confirmation.');
+                } else {
+                    UpdateAccountForm.action = '/account/update/' + UserID + '?_method=PATCH'
+                    UpdateAccountForm.submit()
+                }
+            }
+        })
+    }
+    if (ChangePassModal) {
+        ChangePassModal.addEventListener('show.bs.modal', event => {
+            const Button = event.relatedTarget
+            
+            const UserID = Button.getAttribute('data-bs-userid')
+            const CurrentPassInput = ChangePassModal.querySelector('#current-pass')
+            const ConfirmNewPasswordInput = ChangePassModal.querySelector('#confirm-new-pass')
+            const NewPassInput = ChangePassModal.querySelector('#new-pass')
+            const ChangePassForm = ChangePassModal.querySelector('#change-pass-form') 
+            const SubmitChangePassButton = ChangePassModal.querySelector('#submit-changePass-button')
+            
+            //replace space and tab in the input
+            NewPassInput.addEventListener('input', function(event) {
+                if (event.target.value.includes(' ') || event.target.value.includes('\t')) {
+                    event.target.value = event.target.value.replace(/[\s\t]/g, '');
+                }
+            });
+            ConfirmNewPasswordInput.addEventListener('input', function(event) {
+                if (event.target.value.includes(' ') || event.target.value.includes('\t')) {
+                    event.target.value = event.target.value.replace(/[\s\t]/g, '');
+                }
+            });
+            
+            SubmitChangePassButton.onclick = function () {
+                if (!CurrentPassInput.value.trim()) {
+                    event.preventDefault();
+                    alert('Please enter your password for confirmation.');
+                } else if (!ConfirmNewPasswordInput.value.trim()) {
+                    event.preventDefault();
+                    alert('Please re-enter your new password.');
+                } else if (ConfirmNewPasswordInput.value.trim() != NewPassInput.value.trim()) {
+                    event.preventDefault();
+                    alert('New Pass and Confirm New Pass does not match.');
+                } else {
+                    ChangePassForm.action = '/account/changepass/' + UserID + '?_method=PATCH'
+                    ChangePassForm.submit()
+                }
+            }
+        })
+    }
+</script>
