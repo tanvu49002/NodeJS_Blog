@@ -27,13 +27,15 @@ class CourseController {
         let user = req.user;
         let courseId = req.params.id;
         let lessonId = req.query.id;
+
         if (!lessonId) {
             Promise.all([User.findOne({ _id: user.userId }), Lesson.find({ id_course: courseId }), Lesson.findOne({ id_course: courseId })])
                 .then(([user, lessons, lessonDetails]) => {
                     res.render('lesson', {
                         user: mongooseToObject(user),
                         lessons: multipleMongooseToObject(lessons),
-                        lessonDetails: mongooseToObject(lessonDetails)
+                        lessonDetails: mongooseToObject(lessonDetails),
+                        lessonId,
                     });
                 })
                 .catch((error) => next(error));
@@ -43,7 +45,8 @@ class CourseController {
                     res.render('lesson', {
                         user: mongooseToObject(user),
                         lessons: multipleMongooseToObject(lessons),
-                        lessonDetails: mongooseToObject(lessonDetails)
+                        lessonDetails: mongooseToObject(lessonDetails),
+                        lessonId,
                     });
                 })
                 .catch((error) => next(error));

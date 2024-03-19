@@ -3,13 +3,13 @@
         <div class='col-lg-8 mb-5'>
             <div class="lesson-video mb-2">
                 <video class="lesson-video" controls frameborder="0" allowfullscreen preload="auto">
-                    <source src="" type="video/mp4">
+                    <source src="{{lessonDetails.video}}" type="video/mp4">
                     Your browser does not support the video tag.
                 </video>
             </div>
             <div class="container">
-                <h3 class="lesson-title"></h3>
-                <p class="lesson-date"></p>
+                <h3 class="lesson-title">{{lessonDetails.title}}</h3>
+                <p class="lesson-date">{{lessonId}}</p>
                 
                 <h3>Comments</h3>
                 <span>(31 comments)</span>
@@ -65,9 +65,19 @@
             <span class="course-content-text">Course Content</span>
             {{#each lessons}}
                 <ul class="mt-2 lesson-list list-group">
-                        <li class="lesson-item list-group-item" data-lessonid = {{this._id}}>
-                            {{sumhelper @index 1}}. {{this.title}}
-                        </li>
+                    <a href="?id={{this._id}}" class="lesson-link">
+                        {{#with ../lessonDetails}}
+                            {{#if (isSelected _id ../this._id)}}
+                                <li class="lesson-item list-group-item lesson-active">  
+                                    {{sumhelper @index 1}}. {{../this.title}}
+                                </li>
+                            {{else}}
+                                <li class="lesson-item list-group-item">  
+                                    {{sumhelper @index 1}}. {{../this.title}}
+                                </li>
+                            {{/if}}
+                        {{/with}}
+                    </a>
                 </ul>
             {{/each}}
         </div>
@@ -78,6 +88,7 @@
     <button class="btn btn-primary next-prev-btn rounded-5" type="button">Next Lesson</button>
 </div>
 <script>
+    /*
     document.addEventListener("DOMContentLoaded", () => {
         const lessonItems = document.querySelectorAll('.lesson-item');
 
@@ -105,6 +116,6 @@
                     .catch(error => console.error('Error:', error));
             });
         });
-    });
+    });*/
 </script>
 

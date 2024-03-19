@@ -38,8 +38,10 @@ const HandlebarsHelper = {
             accum += block.fn(i);
         return accum;
     },
-    isSelected: (selected, current) => {
-        return selected === current;
+    isSelected: (id1, id2) => {
+        const id1String = id1.toString();
+        const id2String = id2.toString();
+        return id1String == id2String;
     }
 }
 module.exports = HandlebarsHelper
