@@ -1,5 +1,9 @@
-const Handlebars = require('handlebars')
+const Handlebars = require('handlebars');
+const moment = require('moment');
 const HandlebarsHelper = {
+    formatDate: (date) => {
+        return moment(date).format('DD-MM-YYYY');
+    },
     sumhelper: function (a, b) {
         return a + b
     },

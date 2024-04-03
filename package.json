@@ -33,6 +33,7 @@
         "express-handlebars": "^7.1.2",
         "jsonwebtoken": "^9.0.2",
         "method-override": "^3.0.0",
+        "moment": "^2.30.1",
         "mongoose": "^6.12.6",
         "mongoose-delete": "^1.0.1",
         "mongoose-slug-generator": "^1.0.4",

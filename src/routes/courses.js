@@ -16,9 +16,11 @@ router.patch('/mycourse/:id/restore', courseController.restoreMyCourse);
 router.put('/mycourse/:id', courseController.updateMyCourse);
 router.delete('/mycourse/:id', courseController.deleteMyCourse);
 router.delete('/mycourse/:id/permanenly', courseController.permanenlyDeleteMyCourse);
-router.get('/mycourse/:id', verifyMiddleware.verifyToken, courseController.showMyLesson)
+router.get('/mycourse/:id', verifyMiddleware.verifyToken, courseController.showMyLesson);
 router.get('/:id', verifyMiddleware.verifyToken, courseController.showLessonDetail);
 router.get('/getLessonDetail/:id', verifyMiddleware.verifyToken, courseController.getLessonDetail);
+router.post('/:id/comment/store', verifyMiddleware.verifyToken, courseController.storeComment);
+
 
 
 module.exports = router;

@@ -5,6 +5,8 @@ const {
 const Course = require('../models/course');
 const Lesson = require('../models/lesson')
 const User = require('../models/user')
+const Comment = require('../models/comment')
+
 const PAGE_SIZE = 4
 class CourseController {
     //[get] course/getLessonDetail?id
@@ -29,24 +31,30 @@ class CourseController {
         let lessonId = req.query.id;
 
         if (!lessonId) {
-            Promise.all([User.findOne({ _id: user.userId }), Lesson.find({ id_course: courseId }), Lesson.findOne({ id_course: courseId })])
-                .then(([user, lessons, lessonDetails]) => {
+            Lesson.findOne({ id_course: courseId })
+                .then(lesson => {
+                    return Promise.all([User.findOne({ _id: user.userId }), Lesson.find({ id_course: courseId }), lesson, Comment.find({ id_lesson: lesson._id }).populate('id_user')])
+                })
+
+                .then(([user, lessons, lessonDetails, comments]) => {
                     res.render('lesson', {
                         user: mongooseToObject(user),
                         lessons: multipleMongooseToObject(lessons),
                         lessonDetails: mongooseToObject(lessonDetails),
-                        lessonId,
+                        lessonId: lessonDetails._id,
+                        comments: multipleMongooseToObject(comments),
                     });
                 })
                 .catch((error) => next(error));
         } else {
-            Promise.all([User.findOne({ _id: user.userId }), Lesson.find({ id_course: courseId }), Lesson.findOne({ _id: lessonId })])
-                .then(([user, lessons, lessonDetails]) => {
+            Promise.all([User.findOne({ _id: user.userId }), Lesson.find({ id_course: courseId }), Lesson.findOne({ _id: lessonId }), Comment.find({ id_lesson: lessonId }).populate('id_user')])
+                .then(([user, lessons, lessonDetails, comments]) => {
                     res.render('lesson', {
                         user: mongooseToObject(user),
                         lessons: multipleMongooseToObject(lessons),
                         lessonDetails: mongooseToObject(lessonDetails),
                         lessonId,
+                        comments: multipleMongooseToObject(comments),
                     });
                 })
                 .catch((error) => next(error));
@@ -209,6 +217,45 @@ class CourseController {
             .save()
             .then(() => res.redirect('/course/mycourse/' + id_course))
             .catch((error) => next(error));
+    }
+    //[post] /course/:idlesson/comment/store
+    storeComment(req, res, next) {
+        const commentdetail = req.body.commentdetail;
+        const courseId = req.params.id;
+        let id_lesson = req.query.id;
+        const user = req.user;
+
+        // Kiểm tra nếu không có id_lesson từ URL, thì tìm lesson đầu tiên trong khoá học
+        if (!id_lesson) {
+            Lesson.findOne({ id_course: courseId })
+                .then(lesson => {
+                    if (!lesson) {
+                        throw new Error('No lesson found in this course');
+                    }
+                    // Gán giá trị id_lesson tìm được từ database
+                    id_lesson = lesson._id;
+                    // Tạo mới comment sau khi đã xác định được id_lesson
+                    const comment = new Comment({
+                        id_lesson,
+                        id_user: user.userId,
+                        commentdetail,
+                    });
+                    return comment.save();
+                })
+                .then(() => res.redirect('back'))
+                .catch(error => next(error));
+        } else {
+            // Trong trường hợp có id_lesson từ URL, tạo mới comment ngay lập tức
+            const comment = new Comment({
+                id_lesson,
+                id_user: user.userId,
+                commentdetail,
+            });
+            comment
+                .save()
+                .then(() => res.redirect('back'))
+                .catch(error => next(error));
+        }
     }
 }
 

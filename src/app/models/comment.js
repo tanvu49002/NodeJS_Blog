@@ -14,9 +14,9 @@ const Schema = mongoose.Schema;
 // })
 const Comment = new Schema(
     {
-        commentdetail: { type: String },
         id_lesson: { type: mongoose.Schema.Types.ObjectId, ref: 'Lesson' },
         id_user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+        commentdetail: { type: String },
     },
     {
         timestamps: true,
@@ -24,7 +24,7 @@ const Comment = new Schema(
 );
 //add plugin
 // mongoose.plugin(slug, options);
-Lesson.plugin(mongooseDelete, {
+Comment.plugin(mongooseDelete, {
     deletedAt: true,
     overrideMethods: 'all'
 });
