@@ -223,6 +223,17 @@
     background-color: #009579;
     color: white;
   }
+  .cmt-content-wrap:hover .btn-cmt-actions-custom-size {
+    background-color: #ccc;
+    color: black;
+  }
+  .btn-cmt-actions-custom-size {
+    background-color: white;
+    height: 40px;
+    width: 40px;
+    border: none;
+    color: white;
+  }
 
   @media (max-width: 992px) {
     .course-content {
